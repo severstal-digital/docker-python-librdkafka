@@ -10,8 +10,9 @@ RUN apt-get update && \
                        libkrb5-dev \
                        libssl-dev \
                        g++ && \
-    pip install --upgrade pip && \
-    pip install --no-cache-dir -I requests-kerberos==0.12.0 confluent-kafka[avro]==1.6.0 --no-binary=confluent-kafka && \
+    pip install --no-cache-dir -I --upgrade pip && \
+    pip install --no-cache-dir -I requests-kerberos==0.13.0 &&  \
+    pip install --no-cache-dir -I confluent-kafka[avro]==1.6.0 --no-binary=confluent-kafka && \
     apt-get -y remove libkrb5-dev libsasl2-dev librdkafka-dev libssl-dev g++ && \
     apt-get -y autoremove && \
     apt-get -y clean
