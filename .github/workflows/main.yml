@@ -81,7 +81,7 @@ jobs:
       IMAGE_TAG: ${{ matrix.python-version }}-librdkafka-1.6.0-${{ needs.setup.outputs.tag }}
     steps:
       - name: Download artifact.
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: |
             image-${{ matrix.python-version }}
@@ -92,13 +92,13 @@ jobs:
           docker load --input /tmp/img-${{ matrix.python-version }}.tar
 
       - name: Login to DockerHub.
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Login to GitHub Container Registry.
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
