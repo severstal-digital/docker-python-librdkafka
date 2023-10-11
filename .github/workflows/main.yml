@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.6', '3.7', '3.8', '3.9', '3.10', '3.11' ]
+        python-version: [ '3.8', '3.9', '3.10', '3.11', '3.12' ]
     env:
       IMAGE_TAG: ${{ matrix.python-version }}-librdkafka-1.6.0-${{ needs.setup.outputs.tag }}
     steps:
@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.6', '3.7', '3.8', '3.9', '3.10', '3.11' ]
+        python-version: [ '3.8', '3.9', '3.10', '3.11', '3.12' ]
     env:
       IMAGE_TAG: ${{ matrix.python-version }}-librdkafka-1.6.0-${{ needs.setup.outputs.tag }}
     steps:
