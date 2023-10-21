@@ -1,0 +1,28 @@
+--- a/src/rdkafka_conf.c
++++ b/src/rdkafka_conf.c
+@@ -2201,10 +2201,25 @@ static void rd_kafka_defaultconf_set(int scope, void *conf) {
+ }
+ 
+ rd_kafka_conf_t *rd_kafka_conf_new(void) {
++        static int    _hname_init = 0;
++        static char   _hname[1024];
++        static char * hostname = NULL;
++
+         rd_kafka_conf_t *conf = rd_calloc(1, sizeof(*conf));
++
++        if (!_hname_init) {
++                int res;
++                (void) memset(_hname, 0, sizeof(_hname));
++                res = gethostname(_hname, sizeof(_hname) - 1);
++                if (res == 0) hostname = _hname;
++                _hname_init = 1;
++        }
++
+         rd_assert(RD_KAFKA_CONF_PROPS_IDX_MAX > sizeof(*conf) &&
+                   *"Increase RD_KAFKA_CONF_PROPS_IDX_MAX");
+         rd_kafka_defaultconf_set(_RK_GLOBAL, conf);
++        if (hostname)
++                (void) rd_kafka_conf_set(conf, "client.id", hostname, NULL, 0);
+         rd_kafka_anyconf_clear_all_is_modified(conf);
+         return conf;
+ }

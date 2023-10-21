@@ -26,15 +26,20 @@ jobs:
       matrix:
         python-version: [ '3.8', '3.9', '3.10', '3.11', '3.12' ]
     env:
-      IMAGE_TAG: ${{ matrix.python-version }}-librdkafka-1.6.0-${{ needs.setup.outputs.tag }}
+      IMAGE_TAG: ${{ matrix.python-version }}-librdkafka-2.2.0-${{ needs.setup.outputs.tag }}
     steps:
       - name: Checkout.
         uses: actions/checkout@v3
 
       - name: Replace basic Docker image's python version.
         run: |
-          sed -i 's/python:3-slim-bullseye/python:${{ matrix.python-version }}-slim-bullseye/' Dockerfile
-          head Dockerfile
+          cp -f Dockerfile Dockerfile.orig
+          sed -i 's/python:3-slim-bookworm/python:${{ matrix.python-version }}-slim-bookworm/' Dockerfile
+          # minimize layer copy
+          site_packages='/usr/local/lib/python${{ matrix.python-version }}/site-packages/'
+          sed -E -i "s,^COPY\\s+--from=aldente\\s+/usr/local/lib/\\s+/usr/local/lib/\\s*\$,COPY --from=aldente ${site_packages} ${site_packages}," Dockerfile
+          diff -Naru Dockerfile.orig Dockerfile || true
+          rm -f Dockerfile.orig
 
       - name: Set up Docker Buildx.
         id: buildx
@@ -78,7 +83,7 @@ jobs:
       matrix:
         python-version: [ '3.8', '3.9', '3.10', '3.11', '3.12' ]
     env:
-      IMAGE_TAG: ${{ matrix.python-version }}-librdkafka-1.6.0-${{ needs.setup.outputs.tag }}
+      IMAGE_TAG: ${{ matrix.python-version }}-librdkafka-2.2.0-${{ needs.setup.outputs.tag }}
     steps:
       - name: Download artifact.
         uses: actions/download-artifact@v3
