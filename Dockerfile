@@ -47,12 +47,15 @@ ENV DEB_CFLAGS_STRIP="${_CFLAGS_STRIP}" \
     DEB_CXXFLAGS_STRIP="${_CFLAGS_STRIP}" \
     DEB_CXXFLAGS_PREPEND="${_CFLAGS_PREPEND}"
 
+COPY /patches/librdkafka.patch  /tmp/
+
 ## build librdkafka already!
 RUN cd /tmp ; \
     mkdir librdkafka ; \
     cd librdkafka ; \
     eval "$(dpkg-buildflags --export=sh)" ; \
     tar --strip-components=1 -xf ${LIBRDKAFKA_TARBALL} ; \
+    patch -p1 < /tmp/librdkafka.patch ; \
     ./configure \
       --prefix=/usr/local \
       --sysconfdir=/etc \
