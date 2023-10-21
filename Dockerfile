@@ -1,4 +1,4 @@
-FROM python:3-slim-bullseye
+FROM python:3-slim-bookworm
 
 ## Kafka + Kerberos/SASL
 RUN apt-get update && \
