@@ -33,8 +33,9 @@ jobs:
 
       - name: Replace basic Docker image's python version.
         run: |
-          sed -i 's/python:3-slim-bookworm/python:${{ matrix.python-version }}-slim-bookworm/' Dockerfile
-          head Dockerfile
+          sed -i.orig 's/python:3-slim-bookworm/python:${{ matrix.python-version }}-slim-bookworm/' Dockerfile
+          diff -Naru Dockerfile.orig Dockerfile || true
+          rm -f Dockerfile.orig
 
       - name: Set up Docker Buildx.
         id: buildx
