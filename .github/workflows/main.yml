@@ -33,7 +33,11 @@ jobs:
 
       - name: Replace basic Docker image's python version.
         run: |
-          sed -i.orig 's/python:3-slim-bookworm/python:${{ matrix.python-version }}-slim-bookworm/' Dockerfile
+          cp -f Dockerfile Dockerfile.orig
+          sed -i 's/python:3-slim-bookworm/python:${{ matrix.python-version }}-slim-bookworm/' Dockerfile
+          # minimize layer copy
+          site_packages='/usr/local/lib/python${{ matrix.python-version }}/site-packages/'
+          sed -E -i "s,^COPY\\s+--from=aldente\\s+/usr/local/lib/\\s+/usr/local/lib/\\s*\$,COPY --from=aldente ${site_packages} ${site_packages}," Dockerfile
           diff -Naru Dockerfile.orig Dockerfile || true
           rm -f Dockerfile.orig
 
